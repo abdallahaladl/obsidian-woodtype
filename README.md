@@ -4,7 +4,7 @@
 heavy ink borders, hard offset shadows and chunky display type, built so text
 never disappears into its background.
 
-![Woodtype](screenshot.png)
+![Woodtype](screenshots/cover-large.png)
 
 ## Features
 
