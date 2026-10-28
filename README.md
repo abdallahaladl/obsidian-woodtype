@@ -18,6 +18,8 @@ never disappears into its background.
   accent hue instead of a rainbow.
 - **Canvas aware** — paper cards, themed edges, group chips and legible
   markers/links on every card colour.
+- **RTL aware** — callouts, quotes, headings and embeds use logical borders,
+  so Arabic notes mirror cleanly.
 - **Self-contained** — DM Sans is embedded; no remote fonts, snippets or
   companion themes required.
 
