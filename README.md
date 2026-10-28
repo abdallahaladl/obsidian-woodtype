@@ -27,7 +27,8 @@ never disappears into its background.
 
 ### Community themes
 
-Once the theme is listed: **Settings → Appearance → Themes → Browse → Woodtype**.
+**Settings → Appearance → Themes → Browse → Woodtype**, or
+[add it directly](https://community.obsidian.md/themes/woodtype).
 
 ### Manual
 
