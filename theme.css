@@ -1494,42 +1494,42 @@ a.tag:hover {
    08 · CANVAS
    ========================================================================== */
 
-/* --- board ----------------------------------------------------------------
-   The board is a drafted proof sheet: crisp dot grid, slow major rule every
-   five grid units, and subtle vignette lighting. */
-.canvas-wrapper {
-	--wt-canvas-board: #f4efe4;
-	--wt-canvas-dot: rgba(0, 0, 0, 0.22);
-	--wt-canvas-major: rgba(0, 0, 0, 0.055);
-	--wt-canvas-glow: rgba(255, 255, 255, 0.65);
+/* --- board: simple square grid, no dots -----------------------------------
+   Architectural graph-paper grid: subtle horizontal and vertical lines,
+   strict square units, with all dot patterns completely suppressed. */
+.canvas-background,
+.canvas-background circle,
+svg.canvas-background {
+	display: none !important;
+}
 
-	background-color: var(--wt-canvas-board);
+.canvas-wrapper {
+	--canvas-dot-pattern: transparent !important;
+	--wt-canvas-board: #f5f2e9;
+	--wt-canvas-grid: rgba(0, 0, 0, 0.09);
+
+	background-color: var(--wt-canvas-board) !important;
 	background-image:
-		radial-gradient(var(--wt-canvas-dot) 1.15px, transparent 1.15px),
-		repeating-linear-gradient(90deg, var(--wt-canvas-major) 0 1.5px, transparent 1.5px 110px),
-		repeating-linear-gradient(0deg, var(--wt-canvas-major) 0 1.5px, transparent 1.5px 110px),
-		radial-gradient(120% 90% at 50% 0%, var(--wt-canvas-glow), transparent 62%);
-	background-size: 22px 22px, 110px 110px, 110px 110px, 100% 100%;
-	background-position: 0 0, 0 0, 0 0, 0 0;
-	background-repeat: repeat, repeat, repeat, no-repeat;
+		linear-gradient(to right, var(--wt-canvas-grid) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--wt-canvas-grid) 1px, transparent 1px) !important;
+	background-size: 30px 30px !important;
+	background-position: 0 0 !important;
 }
 
 body.theme-dark .canvas-wrapper {
-	--wt-canvas-board: #111216;
-	--wt-canvas-dot: rgba(255, 255, 255, 0.16);
-	--wt-canvas-major: rgba(255, 255, 255, 0.045);
-	--wt-canvas-glow: rgba(255, 255, 255, 0.035);
+	--wt-canvas-board: #14151a;
+	--wt-canvas-grid: rgba(255, 255, 255, 0.09);
 }
 
 /* --- cards ----------------------------------------------------------------
-   Modular letterpress cards: bold ink border, hard offset shadow, signature
-   accent spine, and tactile hover feedback. */
+   Neubrutalist cards: 4-sided bold yellow borders, 100% black hard offset shadow,
+   elevated high-contrast surface, and readable bold typography. */
 .canvas-node .canvas-node-container,
 .canvas-node-container {
 	position: relative;
-	border: var(--wt-border) solid var(--wt-line);
-	border-radius: var(--wt-radius);
-	box-shadow: 4px 4px 0 var(--wt-shadow-color);
+	border: 3px solid var(--wt-yellow) !important;
+	border-radius: var(--wt-radius, 0px) !important;
+	box-shadow: 5px 5px 0 #000000 !important;
 	transition:
 		box-shadow 90ms ease,
 		transform 90ms ease,
@@ -1537,115 +1537,79 @@ body.theme-dark .canvas-wrapper {
 	overflow: hidden;
 }
 
+/* Hide separate spine: all 4 borders are now styled in yellow */
+.canvas-node .canvas-node-container::before {
+	display: none !important;
+}
+
 /* Light mode card surface */
 body.theme-light .canvas-node .canvas-node-container,
 body.theme-light .canvas-node-container {
-	background-color: #ffffff;
-	border-color: #000000;
-	box-shadow: 4px 4px 0 #000000;
+	background-color: #ffffff !important;
+	border-color: var(--wt-yellow) !important;
+	box-shadow: 5px 5px 0 #000000 !important;
 	--wt-ink: #000000;
 	--wt-ink-soft: #1c1c1c;
 	--wt-line: #000000;
-	--wt-link: #1f4fd8;
-	--wt-link-hover: #0b2f9c;
+	--wt-link: #000000;
 }
 
 /* Dark mode card surface */
 body.theme-dark .canvas-node .canvas-node-container,
 body.theme-dark .canvas-node-container {
-	background-color: #1d1e25;
-	border-color: #ffffff;
-	box-shadow: 4px 4px 0 #000000, 4px 4px 0 1px rgba(255, 255, 255, 0.18);
+	background-color: #1c1d25 !important;
+	border-color: var(--wt-yellow) !important;
+	box-shadow: 5px 5px 0 #000000 !important;
 	--wt-ink: #ffffff;
 	--wt-ink-soft: #e8e8e8;
 	--wt-line: #ffffff;
-	--wt-link: #8fb4ff;
-	--wt-link-hover: #c2d6ff;
+	--wt-link: #ffffff;
 }
 
-/* Accent spine: tactile letterpress bookmark tab that anchors every card */
-.canvas-node .canvas-node-container::before {
-	content: "";
-	position: absolute;
-	inset: 0 auto 0 0;
-	width: 8px;
-	background-color: var(--wt-accent);
-	border-right: 2px solid var(--wt-line);
-	pointer-events: none;
-	z-index: 5;
-	transition: background-color 90ms ease, width 90ms ease;
+/* Card hover: physical pop up + shadow expansion */
+.canvas-node:hover .canvas-node-container {
+	transform: translate(-2px, -2px) !important;
+	box-shadow: 7px 7px 0 #000000 !important;
 }
 
-/* Card hover */
-body.theme-light .canvas-node:hover .canvas-node-container {
-	transform: translate(-2px, -2px);
-	box-shadow: 6px 6px 0 #000000;
-}
-body.theme-dark .canvas-node:hover .canvas-node-container {
-	transform: translate(-2px, -2px);
-	border-color: var(--wt-accent);
-	box-shadow: 6px 6px 0 var(--wt-accent);
+/* Card active: physical press down into the grid */
+.canvas-node:active .canvas-node-container {
+	transform: translate(2px, 2px) !important;
+	box-shadow: 2px 2px 0 #000000 !important;
 }
 
 /* Card focus & selected */
 body.theme-light .canvas-node.is-focused .canvas-node-container,
 body.theme-light .canvas-node.is-selected .canvas-node-container {
-	border-color: var(--wt-accent);
-	box-shadow: 6px 6px 0 var(--wt-accent);
-}
-body.theme-light .canvas-node.is-focused .canvas-node-container::before,
-body.theme-light .canvas-node.is-selected .canvas-node-container::before {
-	background-color: var(--wt-yellow);
-	width: 8px;
+	border-color: var(--wt-accent) !important;
+	box-shadow: 6px 6px 0 #000000, 0 0 0 2px var(--wt-accent) !important;
 }
 
 body.theme-dark .canvas-node.is-focused .canvas-node-container,
 body.theme-dark .canvas-node.is-selected .canvas-node-container {
-	border-color: var(--wt-yellow);
-	box-shadow: 6px 6px 0 var(--wt-yellow);
-}
-body.theme-dark .canvas-node.is-focused .canvas-node-container::before,
-body.theme-dark .canvas-node.is-selected .canvas-node-container::before {
-	background-color: var(--wt-yellow);
-	width: 8px;
+	border-color: var(--wt-cyan) !important;
+	box-shadow: 6px 6px 0 #000000, 0 0 0 2px var(--wt-cyan) !important;
 }
 
 /* --- themed (coloured) cards --------------------------------------------- */
 body.theme-light .canvas-node.is-themed .canvas-node-container {
-	background-color: color-mix(in srgb, var(--canvas-color) 16%, #ffffff);
-	border-color: #000000;
-	box-shadow: 4px 4px 0 #000000;
+	background-color: color-mix(in srgb, var(--canvas-color) 16%, #ffffff) !important;
+	border-color: var(--canvas-color) !important;
+	box-shadow: 5px 5px 0 #000000 !important;
 }
 body.theme-light .canvas-node.is-themed:hover .canvas-node-container {
-	box-shadow: 6px 6px 0 #000000;
-}
-body.theme-light .canvas-node.is-themed .canvas-node-container::before {
-	background-color: var(--canvas-color);
-	width: 7px;
-}
-body.theme-light .canvas-node.is-themed.is-focused .canvas-node-container,
-body.theme-light .canvas-node.is-themed.is-selected .canvas-node-container {
-	border-color: #000000;
-	box-shadow: 6px 6px 0 var(--wt-accent);
+	transform: translate(-2px, -2px) !important;
+	box-shadow: 7px 7px 0 #000000 !important;
 }
 
 body.theme-dark .canvas-node.is-themed .canvas-node-container {
-	background-color: color-mix(in srgb, var(--canvas-color) 20%, #191a21);
-	border-color: var(--canvas-color);
-	box-shadow: 4px 4px 0 #000000, 4px 4px 0 1.5px var(--canvas-color);
+	background-color: color-mix(in srgb, var(--canvas-color) 20%, #191a21) !important;
+	border-color: var(--canvas-color) !important;
+	box-shadow: 5px 5px 0 #000000 !important;
 }
 body.theme-dark .canvas-node.is-themed:hover .canvas-node-container {
-	transform: translate(-2px, -2px);
-	box-shadow: 6px 6px 0 var(--canvas-color);
-}
-body.theme-dark .canvas-node.is-themed .canvas-node-container::before {
-	background-color: var(--canvas-color);
-	width: 7px;
-}
-body.theme-dark .canvas-node.is-themed.is-focused .canvas-node-container,
-body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
-	border-color: var(--wt-yellow);
-	box-shadow: 6px 6px 0 var(--wt-yellow);
+	transform: translate(-2px, -2px) !important;
+	box-shadow: 7px 7px 0 #000000 !important;
 }
 
 /* --- file cards header ---------------------------------------------------- */
@@ -1655,11 +1619,11 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 }
 .canvas-node-file .canvas-node-header {
 	background-color: var(--wt-surface-2);
-	border-bottom: var(--wt-border-thin) solid var(--wt-line);
-	padding: 5px 12px;
+	border-bottom: 2.5px solid var(--wt-yellow);
+	padding: 6px 12px;
 	font-family: var(--wt-font-display);
 	font-weight: 800;
-	font-size: 11px;
+	font-size: 12px;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	color: var(--wt-ink);
@@ -1669,28 +1633,23 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 /* --- groups are zones, not cards ----------------------------------------- */
 .canvas-node.canvas-node-group .canvas-node-container,
 .canvas-node-group.is-themed .canvas-node-container {
-	background-color: color-mix(in srgb, var(--canvas-color, var(--wt-surface)) 7%, transparent);
+	background-color: color-mix(in srgb, var(--canvas-color, var(--wt-surface)) 7%, transparent) !important;
 	background-image: repeating-linear-gradient(
 		135deg,
 		color-mix(in srgb, var(--canvas-color, var(--wt-line)) 18%, transparent) 0 1.5px,
 		transparent 1.5px 9px
-	);
-	border: 2.5px dashed var(--wt-line);
-	box-shadow: none;
-	transform: none;
+	) !important;
+	border: 2.5px dashed var(--wt-yellow) !important;
+	box-shadow: none !important;
+	transform: none !important;
 }
 .canvas-node-group:hover .canvas-node-container,
 .canvas-node-group.is-focused .canvas-node-container,
 .canvas-node-group.is-selected .canvas-node-container {
-	box-shadow: none;
-	transform: none;
-	border-style: dashed;
-	border-color: var(--wt-accent);
-}
-/* zones have no paper spine */
-.canvas-node.canvas-node-group .canvas-node-container::before,
-.canvas-node-group.is-themed .canvas-node-container::before {
-	display: none;
+	box-shadow: none !important;
+	transform: none !important;
+	border-style: dashed !important;
+	border-color: var(--wt-accent) !important;
 }
 
 .canvas-group-label {
@@ -1698,28 +1657,29 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 	font-weight: 900;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
-	font-size: 11px;
+	font-size: 12px;
 	line-height: 1.4;
-	color: #000000;
-	background-color: var(--canvas-color, var(--wt-yellow));
+	color: #000000 !important;
+	background-color: var(--canvas-color, var(--wt-yellow)) !important;
 	border: 2px solid #000000;
-	padding: 2px 10px;
+	padding: 3px 12px;
 	border-radius: var(--wt-radius);
 	box-shadow: 3px 3px 0 #000000;
 }
 .canvas-node-group.is-themed .canvas-group-label {
-	background-color: var(--canvas-color);
+	background-color: var(--canvas-color) !important;
 }
 
-/* --- card typography ------------------------------------------------------ */
+/* --- card typography: readable, prominent, beautifully proportioned ------- */
 .canvas-node-content {
-	padding: 14px 18px 14px 22px;
-	color: var(--wt-ink);
+	padding: 12px 16px !important;
+	color: var(--wt-ink) !important;
 	font-family: var(--wt-font-ui);
-	font-size: 1.12em;
-	font-weight: 700;
-	line-height: 1.45;
-	letter-spacing: -0.01em;
+	font-size: 1.18em !important;
+	letter-spacing: -0.02em;
+	font-weight: 700 !important;
+	line-height: 1.38 !important;
+	letter-spacing: -0.015em;
 	text-wrap: pretty;
 	box-sizing: border-box;
 	min-height: 100%;
@@ -1744,19 +1704,20 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 
 /* links inside cards */
 .canvas-node-content a {
-	color: var(--wt-link);
-	font-weight: 700;
-	text-decoration: underline;
-	text-decoration-thickness: 2px;
+	color: var(--wt-ink) !important;
+	font-weight: 800;
+	text-decoration: underline !important;
+	text-decoration-color: var(--wt-yellow) !important;
+	text-decoration-thickness: 3px !important;
 	text-underline-offset: 3px;
 	transition: background-color 80ms ease, color 80ms ease;
 }
 .canvas-node-content a:hover {
-	background-color: var(--wt-yellow);
-	color: #000000;
-	text-decoration: none;
-	padding: 1px 4px;
-	margin: -1px -4px;
+	background-color: var(--wt-yellow) !important;
+	color: #000000 !important;
+	text-decoration: none !important;
+	padding: 2px 6px;
+	margin: -2px -6px;
 	border-radius: var(--wt-radius);
 }
 
@@ -1779,20 +1740,20 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 	color: var(--wt-ink);
 }
 .canvas-node-content h1 {
-	font-size: 1.45em;
-	box-shadow: inset 0 -0.26em 0 var(--wt-yellow);
+	font-size: 1.55em;
+	box-shadow: inset 0 -0.28em 0 var(--wt-yellow);
 	display: inline-block;
 	padding: 0 0.08em;
 }
 .canvas-node-content h2 {
-	font-size: 1.2em;
-	border-bottom: 2.5px solid var(--wt-line);
-	box-shadow: 0 2px 0 var(--wt-yellow);
+	font-size: 1.3em;
+	border-bottom: 2.5px solid var(--wt-yellow);
+	box-shadow: 0 2px 0 #000000;
 	padding-bottom: 0.12em;
 }
 .canvas-node-content h3 {
-	font-size: 1.05em;
-	border-inline-start: 4px solid var(--wt-cyan);
+	font-size: 1.15em;
+	border-inline-start: 4px solid var(--wt-yellow);
 	padding-inline-start: 8px;
 }
 .canvas-node-content ul,
@@ -1812,16 +1773,14 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 }
 .canvas-node-content blockquote {
 	box-shadow: none;
-	padding: 6px 10px;
+	padding: 6px 12px;
 	margin: 0.4em 0;
 	border-inline-start-width: 4px;
-	border-inline-start-color: var(--wt-ink);
+	border-inline-start-color: var(--wt-yellow);
 	background-color: var(--wt-surface-2);
 }
 
 /* --- edges ---------------------------------------------------------------- */
-/* Obsidian draws edges as SVG paths inside .canvas-edges; keep the stroke
-   scaled with zoom so it stays a crisp 2.5px line at every zoom level. */
 .canvas-edges path.canvas-display-path {
 	stroke: var(--wt-ink);
 	stroke-width: calc(2.5px * var(--zoom-multiplier, 1));
@@ -1836,17 +1795,17 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 }
 .canvas-edges g.is-focused path.canvas-display-path,
 .canvas-edges g:hover path.canvas-display-path {
-	stroke: var(--wt-accent);
+	stroke: var(--wt-yellow);
 	stroke-width: calc(4px * var(--zoom-multiplier, 1));
 }
 .canvas-edges g.is-focused polygon.canvas-path-end,
 .canvas-edges g:hover polygon.canvas-path-end {
-	stroke: var(--wt-accent);
-	fill: var(--wt-accent);
+	stroke: var(--wt-yellow);
+	fill: var(--wt-yellow);
 }
 .canvas-path-label {
 	font-family: var(--wt-font-mono);
-	font-size: 10px;
+	font-size: 10.5px;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.04em;
@@ -1855,15 +1814,15 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 	border: 2px solid #000000;
 	border-radius: var(--wt-radius);
 	padding: 1px 6px;
-	box-shadow: 2px 2px 0 #000000;
+	box-shadow: 2.5px 2.5px 0 #000000;
 }
 
 /* --- handles & controls --------------------------------------------------- */
 .canvas-node-connection-point {
 	background-color: var(--wt-surface);
-	border: 2px solid var(--wt-line);
+	border: 2px solid var(--wt-yellow);
 	border-radius: var(--wt-radius);
-	box-shadow: 2px 2px 0 var(--wt-shadow-color);
+	box-shadow: 2px 2px 0 #000000;
 }
 .canvas-node-connection-point:hover {
 	background-color: var(--wt-yellow);
@@ -1875,7 +1834,7 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 	background-color: var(--wt-surface);
 	border: 2.5px solid var(--wt-line);
 	border-radius: var(--wt-radius);
-	box-shadow: 4px 4px 0 var(--wt-shadow-color);
+	box-shadow: 4px 4px 0 #000000;
 	overflow: hidden;
 }
 .canvas-control-item {
@@ -1910,7 +1869,7 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 	background-color: var(--wt-surface);
 	border: 2.5px solid var(--wt-line);
 	border-radius: var(--wt-radius);
-	box-shadow: 5px 5px 0 var(--wt-shadow-color);
+	box-shadow: 5px 5px 0 #000000;
 }
 .canvas-card-menu .canvas-card-menu-button {
 	border-right: 1.5px solid var(--wt-line);
@@ -1940,7 +1899,7 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 	background-color: var(--wt-surface);
 	border: 2.5px solid var(--wt-line);
 	border-radius: var(--wt-radius);
-	box-shadow: 4px 4px 0 var(--wt-shadow-color);
+	box-shadow: 4px 4px 0 #000000;
 }
 .canvas-node-label {
 	font-family: var(--wt-font-mono);
@@ -1955,8 +1914,8 @@ body.theme-dark .canvas-node.is-themed.is-selected .canvas-node-container {
 	padding: 1px 6px;
 }
 .canvas-selection {
-	border: 2px dashed var(--wt-accent);
-	background-color: color-mix(in srgb, var(--wt-accent) 12%, transparent);
+	border: 2px dashed var(--wt-yellow);
+	background-color: color-mix(in srgb, var(--wt-yellow) 12%, transparent);
 	border-radius: var(--wt-radius);
 }
 
