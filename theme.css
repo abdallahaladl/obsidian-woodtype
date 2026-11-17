@@ -981,17 +981,15 @@ body.theme-dark .cm-s-obsidian .cm-strong {
 .markdown-preview-view ol,
 .canvas-node-content ol {
 	list-style: none;
-	counter-reset: wt-ol;
 }
-.markdown-rendered ol > li,
-.markdown-preview-view ol > li,
-.canvas-node-content ol > li {
-	counter-increment: wt-ol;
-}
+
+/* Paint the badge from the browser's own `list-item` counter. It is the only
+   counter that honours <ol start>, <li value> and nested list resets, so a
+   canvas card that begins at "2." keeps its 2 instead of restarting at 1. */
 .markdown-rendered ol > li::before,
 .markdown-preview-view ol > li::before,
 .canvas-node-content ol > li::before {
-	content: counter(wt-ol);
+	content: counter(list-item);
 	display: inline-block;
 	min-width: 1.55em;
 	margin-inline-start: -2.65ch;
@@ -1676,7 +1674,6 @@ body.theme-dark .canvas-node.is-themed:hover .canvas-node-container {
 	color: var(--wt-ink) !important;
 	font-family: var(--wt-font-ui);
 	font-size: 1.18em !important;
-	letter-spacing: -0.02em;
 	font-weight: 700 !important;
 	line-height: 1.38 !important;
 	letter-spacing: -0.015em;
