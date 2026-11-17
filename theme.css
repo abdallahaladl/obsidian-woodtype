@@ -1590,22 +1590,22 @@ body.theme-dark .canvas-node.is-selected .canvas-node-container {
 }
 
 /* --- themed (coloured) cards --------------------------------------------- */
-body.theme-light .canvas-node.is-themed .canvas-node-container {
+body.theme-light .canvas-node.is-themed:not(.canvas-node-group) .canvas-node-container {
 	background-color: color-mix(in srgb, var(--canvas-color) 16%, #ffffff) !important;
 	border-color: var(--canvas-color) !important;
 	box-shadow: 5px 5px 0 #000000 !important;
 }
-body.theme-light .canvas-node.is-themed:hover .canvas-node-container {
+body.theme-light .canvas-node.is-themed:not(.canvas-node-group):hover .canvas-node-container {
 	transform: translate(-2px, -2px) !important;
 	box-shadow: 7px 7px 0 #000000 !important;
 }
 
-body.theme-dark .canvas-node.is-themed .canvas-node-container {
+body.theme-dark .canvas-node.is-themed:not(.canvas-node-group) .canvas-node-container {
 	background-color: color-mix(in srgb, var(--canvas-color) 20%, #191a21) !important;
 	border-color: var(--canvas-color) !important;
 	box-shadow: 5px 5px 0 #000000 !important;
 }
-body.theme-dark .canvas-node.is-themed:hover .canvas-node-container {
+body.theme-dark .canvas-node.is-themed:not(.canvas-node-group):hover .canvas-node-container {
 	transform: translate(-2px, -2px) !important;
 	box-shadow: 7px 7px 0 #000000 !important;
 }
@@ -1641,6 +1641,9 @@ body.theme-dark .canvas-node.is-themed:hover .canvas-node-container {
 	box-shadow: none !important;
 	transform: none !important;
 }
+.canvas-node-group.is-themed .canvas-node-container {
+	border-color: var(--canvas-color) !important;
+}
 .canvas-node-group:hover .canvas-node-container,
 .canvas-node-group.is-focused .canvas-node-container,
 .canvas-node-group.is-selected .canvas-node-container {
@@ -1655,14 +1658,14 @@ body.theme-dark .canvas-node.is-themed:hover .canvas-node-container {
 	font-weight: 900;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
-	font-size: 12px;
+	font-size: 13px;
 	line-height: 1.4;
 	color: #000000 !important;
-	background-color: var(--canvas-color, var(--wt-yellow)) !important;
+	background-color: var(--wt-yellow) !important;
 	border: 2px solid #000000;
-	padding: 3px 12px;
+	padding: 4px 14px;
 	border-radius: var(--wt-radius);
-	box-shadow: 3px 3px 0 #000000;
+	box-shadow: 4px 4px 0 #000000;
 }
 .canvas-node-group.is-themed .canvas-group-label {
 	background-color: var(--canvas-color) !important;
@@ -1716,6 +1719,61 @@ body.theme-dark .canvas-node.is-themed:hover .canvas-node-container {
 	padding: 2px 6px;
 	margin: -2px -6px;
 	border-radius: var(--wt-radius);
+}
+
+/* a card that holds one link is a button, not a note */
+body.theme-light
+	.canvas-node:has(.canvas-node-content > .markdown-rendered > p:only-child > a:only-child)
+	.canvas-node-container,
+body.theme-dark
+	.canvas-node:has(.canvas-node-content > .markdown-rendered > p:only-child > a:only-child)
+	.canvas-node-container {
+	background-color: var(--wt-yellow) !important;
+	border-color: #000000 !important;
+	box-shadow: 4px 4px 0 #000000 !important;
+	--wt-ink: #000000;
+	--wt-link: #000000;
+}
+body.theme-light
+	.canvas-node:has(.canvas-node-content > .markdown-rendered > p:only-child > a:only-child):hover
+	.canvas-node-container,
+body.theme-dark
+	.canvas-node:has(.canvas-node-content > .markdown-rendered > p:only-child > a:only-child):hover
+	.canvas-node-container {
+	box-shadow: 6px 6px 0 #000000 !important;
+}
+.canvas-node:has(.canvas-node-content > .markdown-rendered > p:only-child > a:only-child)
+	.canvas-node-content {
+	padding: 0 14px !important;
+	align-items: center;
+}
+.canvas-node:has(.canvas-node-content > .markdown-rendered > p:only-child > a:only-child)
+	.canvas-node-content a {
+	color: #000000 !important;
+	text-decoration: none !important;
+	font-family: var(--wt-font-mono);
+	font-size: 0.8em;
+	font-weight: 900;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+.canvas-node:has(.canvas-node-content > .markdown-rendered > p:only-child > a:only-child)
+	.canvas-node-content a:hover {
+	background-color: #000000 !important;
+	color: var(--wt-yellow) !important;
+}
+
+/* numbered badges inherit the card's accent */
+.canvas-node.is-themed .canvas-node-content ol > li::before {
+	background-color: var(--canvas-color);
+	color: #000000;
+	border-color: #000000;
+	box-shadow: 2px 2px 0 #000000;
+}
+
+/* card titles underline in their own accent */
+body.theme-dark .canvas-node.is-themed .canvas-node-content strong {
+	text-decoration-color: var(--canvas-color);
 }
 
 .canvas-node-content ul > li::marker,
