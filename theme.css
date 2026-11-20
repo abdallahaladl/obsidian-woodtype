@@ -59,6 +59,44 @@ settings:
         default-light: '#5294FF'
         default-dark: '#5294FF'
     -
+        id: wt-paper-preset
+        title: Light mode paper preset
+        description: Choose the light-mode note background tone (Clean light is the default).
+        type: class-select
+        allowEmpty: false
+        default: wt-paper-light
+        options:
+            -
+                label: Clean light paper (default)
+                value: wt-paper-light
+            -
+                label: Pure white
+                value: wt-paper-white
+            -
+                label: Warm letterpress cream
+                value: wt-paper-cream
+            -
+                label: Classic blue
+                value: wt-paper-blue
+    -
+        id: wt-bg
+        title: Note background
+        description: Custom note page background colour (overrides the paper preset).
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#FAF9F5'
+        default-dark: '#111111'
+    -
+        id: wt-surface-2
+        title: Sidebar & chrome background
+        description: Background colour for sidebars, ribbon, titlebar and secondary surfaces.
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#F1EFE9'
+        default-dark: '#232323'
+    -
         id: wt-shadow-size
         title: Shadow weight
         description: How far the hard offset shadows sit from their element.
@@ -144,10 +182,10 @@ settings:
 body.theme-light {
 	--wt-ink: #000000;
 	--wt-ink-soft: #1c1c1c;
-	--wt-bg: #dcebfe;
+	--wt-bg: #faf9f5;
 	--wt-surface: #ffffff;
-	--wt-surface-2: #eef5ff;
-	--wt-surface-3: #cfe0fb;
+	--wt-surface-2: #f1efe9;
+	--wt-surface-3: #e3e0d8;
 	--wt-line: #000000;
 	--wt-hairline: rgba(0, 0, 0, 0.16);
 
@@ -168,12 +206,37 @@ body.theme-light {
 	--wt-code-fg: #ffffff;
 	--wt-on-accent: #000000;
 	--wt-canvas-line: #000000;
-	--wt-scrollbar-thumb: #5c78a8;
+	--wt-scrollbar-thumb: #78746a;
 
 	--link-unresolved-color: #b3261e;
 	--link-unresolved-decoration-color: #b3261e;
 	--graph-line: rgba(0, 0, 0, 0.28);
 	--background-modifier-cover: rgba(14, 14, 14, 0.45);
+}
+
+/* Light mode paper presets (selectable via Style Settings or body class).
+   `:where(...)` keeps specificity at (0,1,1) so Style Settings custom colour
+   overrides (`wt-bg`, `wt-surface-2`) still take precedence over any preset. */
+body.theme-light:where(.wt-paper-white) {
+	--wt-bg: #ffffff;
+	--wt-surface: #ffffff;
+	--wt-surface-2: #f4f4f2;
+	--wt-surface-3: #e5e4e0;
+	--wt-scrollbar-thumb: #767570;
+}
+body.theme-light:where(.wt-paper-cream) {
+	--wt-bg: #f4efe4;
+	--wt-surface: #fbf8f1;
+	--wt-surface-2: #eae3d4;
+	--wt-surface-3: #dcd3c0;
+	--wt-scrollbar-thumb: #7a7262;
+}
+body.theme-light:where(.wt-paper-blue) {
+	--wt-bg: #dcebfe;
+	--wt-surface: #ffffff;
+	--wt-surface-2: #eef5ff;
+	--wt-surface-3: #cfe0fb;
+	--wt-scrollbar-thumb: #5c78a8;
 }
 
 body.theme-dark {
@@ -242,7 +305,7 @@ body.theme-dark {
 	--background-modifier-border-hover: var(--wt-accent);
 	--background-modifier-border-focus: var(--wt-accent);
 	--background-modifier-hover: var(--wt-surface-3);
-	--background-modifier-active-hover: var(--wt-yellow);
+	--background-modifier-active-hover: var(--wt-surface-3);
 	--background-modifier-form-field: var(--wt-surface);
 	--background-modifier-box-shadow: rgba(14, 14, 14, 0.18);
 	--background-modifier-success: var(--wt-green);
@@ -714,11 +777,14 @@ body.styled-scrollbars ::-webkit-scrollbar-track {
 	border-radius: var(--wt-radius);
 	color: var(--wt-ink);
 }
-.clickable-icon:hover {
+.clickable-icon:hover,
+.clickable-icon.is-active:hover {
 	background-color: var(--wt-yellow);
 	border-color: var(--wt-line);
 	box-shadow: var(--wt-pop-sm);
-	color: #000000;
+	color: var(--wt-on-accent);
+	--icon-color: var(--wt-on-accent);
+	--icon-color-active: var(--wt-on-accent);
 }
 
 /* ==========================================================================
@@ -1198,11 +1264,17 @@ body.theme-dark .cm-s-obsidian .cm-strong {
 .cm-html-embed tbody tr:hover,
 .bases-tbody .bases-tr:hover,
 .suggestion-item.is-selected,
-.menu-item:hover,
-.menu-item.selected,
+.menu-item:not(.is-label):not(.is-disabled):hover,
+.menu-item:not(.is-label):not(.is-disabled).selected,
 .search-result-file-match:hover,
 .tree-item-self.is-active,
-.nav-file-title.is-active {
+.nav-file-title.is-active,
+.vertical-tab-nav-item.is-active,
+.horizontal-tab-nav-item.is-active,
+body:not(.is-phone) .vertical-tab-nav-item.is-active,
+body:not(.is-phone) .horizontal-tab-nav-item.is-active {
+	color: var(--wt-on-accent);
+	--text-color: var(--wt-on-accent);
 	--text-normal: var(--wt-on-accent);
 	--text-muted: var(--wt-on-accent);
 	--text-faint: var(--wt-on-accent);
@@ -1216,9 +1288,33 @@ body.theme-dark .cm-s-obsidian .cm-strong {
 	--link-external-color-hover: var(--wt-on-accent);
 	--icon-color: var(--wt-on-accent);
 	--icon-color-hover: var(--wt-on-accent);
+	--icon-color-active: var(--wt-on-accent);
+	--icon-color-focused: var(--wt-on-accent);
 	--nav-item-color: var(--wt-on-accent);
 	--nav-item-color-hover: var(--wt-on-accent);
 	--nav-item-color-active: var(--wt-on-accent);
+}
+
+/* Search/suggestion match spans and flashing highlights sit on `--wt-yellow`
+   in both modes, so force their text to dark ink (`--wt-on-accent`). */
+.suggestion-highlight,
+.community-item .suggestion-highlight,
+.suggestion-item .suggestion-highlight {
+	background-color: var(--wt-yellow);
+	color: var(--wt-on-accent) !important;
+	--text-normal: var(--wt-on-accent);
+	--text-muted: var(--wt-on-accent);
+	--text-faint: var(--wt-on-accent);
+	padding: 0;
+}
+.search-result-file-matched-text,
+.is-flashing {
+	background-color: var(--wt-yellow);
+	color: var(--wt-on-accent) !important;
+	--text-normal: var(--wt-on-accent);
+	--text-muted: var(--wt-on-accent);
+	--text-faint: var(--wt-on-accent);
+	padding: 0 2px;
 }
 
 .markdown-rendered code:not(pre code),
@@ -2121,13 +2217,23 @@ body.theme-dark .canvas-node.is-themed .canvas-node-content strong {
 	border-color: var(--wt-on-accent);
 	color: var(--wt-yellow);
 }
-.suggestion-hotkey {
+.suggestion-hotkey,
+.setting-hotkey,
+.empty-state-hotkey {
 	background-color: var(--wt-surface-3);
 	border: 1px solid var(--wt-line);
 	border-radius: var(--wt-radius);
+	color: var(--wt-ink);
 	font-family: var(--wt-font-mono);
+}
+.suggestion-hotkey,
+.empty-state-hotkey {
 	font-size: 9.5px;
 	padding: 1px 5px;
+}
+.setting-hotkey.mod-active,
+.setting-hotkey.has-conflict {
+	color: var(--wt-on-accent);
 }
 
 .menu {
@@ -2180,18 +2286,24 @@ select,
 }
 
 /* Obsidian paints the magnifier inside the field (8px inset, 16px wide);
-   core relies on a padding we replace, so reserve the space explicitly. */
-.search-input-container input[type="search"] {
-	padding-inline-start: 30px;
+   core relies on a padding we replace, so reserve space for both the leading
+   magnifier and the trailing clear button across all search inputs. */
+.search-input-container input,
+.search-input-container input[type="search"],
+.search-input-container input[type="text"] {
+	padding-inline-start: 34px;
+	padding-inline-end: 28px;
 }
 
-/* pilled values (properties, filters): keep the remove affordance quiet */
-.multi-select-pill {
+/* pilled values (properties, filters): only tag pills carry a yellow fill and
+   offset shadow; non-tag pills (aliases, list properties) sit on a transparent
+   surface and inherit their adaptive remove-button ink from `--pill-color-remove`. */
+.metadata-property-value[data-property-type="tags"] .multi-select-pill {
 	box-shadow: var(--wt-pop-sm);
 }
 .multi-select-pill-remove-button {
 	background-color: transparent;
-	color: var(--wt-on-accent);
+	color: var(--pill-color-remove, var(--wt-ink));
 	opacity: 0.75;
 }
 .multi-select-pill-remove-button:hover {
@@ -2217,28 +2329,86 @@ body.theme-dark .dropdown {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E");
 }
 
-/* settings navigation */
-.vertical-tab-nav-item {
+/* settings navigation — match Obsidian's `body:not(.is-phone) .vertical-tab-nav-item.is-active`
+   specificity (`0,3,1`) so core does not replace the yellow active background with
+   `--background-modifier-hover` (which caused dark-on-dark text in dark mode). */
+.vertical-tab-nav-item,
+.horizontal-tab-nav-item {
 	border: 1.5px solid transparent;
 	border-radius: var(--wt-radius);
 	color: var(--wt-ink);
 	font-weight: 600;
 }
-.vertical-tab-nav-item:hover {
+.vertical-tab-nav-item:hover,
+.horizontal-tab-nav-item:hover {
 	background-color: var(--wt-surface-3);
 	border-color: var(--wt-line);
 }
-.vertical-tab-nav-item.is-active {
+.vertical-tab-nav-item.is-active,
+.horizontal-tab-nav-item.is-active,
+body .vertical-tab-nav-item.is-active,
+body .horizontal-tab-nav-item.is-active,
+body:not(.is-phone) .vertical-tab-nav-item.is-active,
+body:not(.is-phone) .horizontal-tab-nav-item.is-active {
 	background-color: var(--wt-yellow);
-	color: #000000;
+	color: var(--wt-on-accent);
 	border-color: var(--wt-line);
 	box-shadow: var(--wt-pop-sm);
 	font-weight: 800;
+}
+.vertical-tab-nav-item.is-active .vertical-tab-nav-item-icon,
+.vertical-tab-nav-item.is-active .vertical-tab-nav-item-title,
+.vertical-tab-nav-item.is-active .vertical-tab-nav-item-chevron,
+.horizontal-tab-nav-item.is-active .vertical-tab-nav-item-icon {
+	color: var(--wt-on-accent);
 }
 .vertical-tab-header {
 	background-color: var(--wt-surface-2);
 	border-right: var(--wt-border-thin) solid var(--wt-line);
 }
+
+/* Community Themes & Plugins directory cards and flair badges */
+.community-item {
+	background-color: var(--wt-surface);
+	border: var(--wt-border-thin) solid var(--wt-line);
+	border-radius: var(--wt-radius);
+	color: var(--wt-ink);
+	transition: transform 80ms ease, box-shadow 80ms ease, border-color 80ms ease;
+}
+.community-item:hover {
+	border-color: var(--wt-yellow);
+	box-shadow: var(--wt-pop-sm);
+	transform: translate(-1px, -1px);
+}
+body .community-item.is-selected,
+body .community-item:hover.is-selected:hover {
+	background-color: var(--wt-surface-2);
+	border: var(--wt-border) solid var(--wt-yellow);
+	box-shadow: var(--wt-pop-md);
+	color: var(--wt-ink);
+	--text-normal: var(--wt-ink);
+	--text-muted: var(--wt-text-muted);
+	--text-faint: var(--wt-text-faint);
+}
+.flair,
+.community-item .flair {
+	--flair-background: var(--wt-yellow);
+	--flair-color: var(--wt-on-accent);
+	background-color: var(--wt-yellow);
+	color: var(--wt-on-accent);
+	border: 1.5px solid var(--wt-line);
+	border-radius: var(--wt-radius);
+	font-family: var(--wt-font-mono);
+	font-weight: 800;
+}
+.flair.mod-pop {
+	--flair-background: var(--wt-accent);
+	--flair-color: var(--wt-on-accent);
+	background-color: var(--wt-accent);
+	color: var(--wt-on-accent);
+	border: 1.5px solid var(--wt-line);
+}
+
 input[type="text"]:focus,
 input[type="search"]:focus,
 textarea:focus,
@@ -2248,9 +2418,9 @@ select:focus {
 	box-shadow: var(--wt-shadow-sm);
 }
 
-/* Core styles the element as `button:not(.clickable-icon)`, which outranks a
-   plain `button` selector — match that specificity so the theme's surface,
-   border and offset shadow actually win. */
+/* Core styles the element as `button:not(.clickable-icon)` and reads
+   `color: var(--text-color)`, so set both `--text-color` and `color` on every
+   button state to guarantee adaptive contrast in light and dark modes. */
 button:not(.clickable-icon),
 .mod-cta,
 .setting-item-control button {
@@ -2258,6 +2428,7 @@ button:not(.clickable-icon),
 	border: var(--wt-border-thin) solid var(--wt-line);
 	border-radius: var(--wt-radius);
 	box-shadow: var(--wt-pop-sm);
+	--text-color: var(--wt-ink);
 	color: var(--wt-ink);
 	font-family: var(--wt-font-ui);
 	font-weight: 800;
@@ -2269,7 +2440,8 @@ button:not(.clickable-icon):hover,
 .mod-cta:hover,
 .setting-item-control button:hover {
 	background-color: var(--wt-yellow);
-	color: #000000;
+	--text-color: var(--wt-on-accent);
+	color: var(--wt-on-accent);
 	transform: translate(-1px, -1px);
 	box-shadow: var(--wt-pop-md);
 }
@@ -2286,14 +2458,26 @@ button:not(.clickable-icon):focus-visible,
 button.mod-cta,
 .mod-cta {
 	background-color: var(--wt-accent);
-	color: #000000;
+	--text-color: var(--wt-on-accent);
+	color: var(--wt-on-accent);
 }
 button.mod-cta:hover {
 	background-color: var(--wt-yellow);
-	color: #000000;
+	--text-color: var(--wt-on-accent);
+	color: var(--wt-on-accent);
 }
-button.mod-warning {
+button.mod-warning,
+button.mod-destructive,
+button.mod-destructive.mod-cta {
 	background-color: var(--wt-red);
+	--text-color: var(--wt-on-accent);
+	color: var(--wt-on-accent);
+}
+button.mod-warning:hover,
+button.mod-destructive:hover,
+button.mod-destructive.mod-cta:hover {
+	background-color: var(--wt-yellow);
+	--text-color: var(--wt-on-accent);
 	color: var(--wt-on-accent);
 }
 
